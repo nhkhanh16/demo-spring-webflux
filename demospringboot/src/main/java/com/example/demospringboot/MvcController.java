@@ -25,7 +25,7 @@ public class MvcController {
 	}
 
 	@GetMapping("/api/demo/aggregate")
-	public String getAggregateData() {
+	public String getAggregateData() throws InterruptedException {
 		long start = System.currentTimeMillis();
 
 		long productCount = fetchProductCount();
@@ -40,19 +40,25 @@ public class MvcController {
 		return result;
 	}
 
-	private long fetchProductCount() {
-		return repository.count();
+	private long fetchProductCount() throws InterruptedException {
+		long count = repository.count();
+		Thread.sleep(1000);
+		return count;
 	}
 
-	private Product fetchMostExpensiveProduct() {
-		return repository.findFirstByOrderByPriceDesc()
+	private Product fetchMostExpensiveProduct() throws InterruptedException {
+		Product product = repository.findFirstByOrderByPriceDesc()
 				.orElseThrow(() -> new IllegalStateException("Không có sản phẩm trong database"));
+		Thread.sleep(1000);
+		return product;
 	}
 
-	private double fetchAveragePrice() {
-		return repository.findAll().stream()
+	private double fetchAveragePrice() throws InterruptedException {
+		double averagePrice = repository.findAll().stream()
 				.mapToDouble(Product::getPrice)
 				.average()
 				.orElse(0.0);
+		Thread.sleep(1000);
+		return averagePrice;
 	}
 }

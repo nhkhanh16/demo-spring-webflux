@@ -1,0 +1,72 @@
+{
+	"info": {
+		"_postman_id": "4b5c8d63-86d4-4a90-b2d8-6d3be8728063",
+		"name": "WebFlux vs MVC Load Test",
+		"description": "Local performance comparison. Run one folder at a time with the same virtual-user and duration settings.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "mvcBaseUrl",
+			"value": "http://localhost:8081"
+		},
+		{
+			"key": "webfluxBaseUrl",
+			"value": "http://localhost:8080"
+		}
+	],
+	"item": [
+		{
+			"name": "MVC - Blocking",
+			"item": [
+				{
+					"name": "GET /api/demo/blocking",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{mvcBaseUrl}}/api/demo/blocking"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "WebFlux - Non-blocking",
+			"item": [
+				{
+					"name": "GET /api/demo/non-blocking",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{webfluxBaseUrl}}/api/demo/non-blocking"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('HTTP 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

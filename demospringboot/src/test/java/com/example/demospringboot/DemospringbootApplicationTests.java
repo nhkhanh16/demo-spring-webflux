@@ -25,7 +25,7 @@ class DemospringbootApplicationTests {
 	}
 
 	@Test
-	void aggregateQueriesDatabaseAndReturnsSummary() {
+	void aggregateQueriesDatabaseAndReturnsSummary() throws InterruptedException {
 		assertThat(controller.getAggregateData())
 				.contains("Sản phẩm: 5", "Giá cao nhất: MacBook Air M3 ($1200.00)", "Giá trung bình: $789.40");
 	}

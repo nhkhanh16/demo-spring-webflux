@@ -30,13 +30,12 @@ public class WebfluxController {
 	}
 
 	@GetMapping("/api/demo/non-blocking")
-	public Mono<List<Product>> getNonBlockingData() {
-		return repository.findAll()
-				.collectList()
-				.delayElement(Duration.ofSeconds(5))
-				.doOnNext(products -> System.out.println(
-						"[WebFlux] Netty trả kết quả trên luồng: " + Thread.currentThread().getName()));
-	}
+public Mono<List<Product>> getNonBlockingData() {
+	return Mono.delay(Duration.ofSeconds(5))
+			.then(repository.findAll().collectList())
+			.doOnNext(products -> System.out.println(
+					"[WebFlux] Netty trả kết quả trên luồng: " + Thread.currentThread().getName()));
+}
 
 	@GetMapping("/api/demo/aggregate")
 	public Mono<String> getAggregateData() {
@@ -58,12 +57,14 @@ public class WebfluxController {
 	}
 
 	private Mono<Long> fetchProductCount() {
-		return repository.count();
+		return repository.count()
+				.delayElement(Duration.ofSeconds(1));
 	}
 
 	private Mono<Product> fetchMostExpensiveProduct() {
 		return repository.findFirstByOrderByPriceDesc()
-				.switchIfEmpty(Mono.error(new IllegalStateException("Không có sản phẩm trong database")));
+				.switchIfEmpty(Mono.error(new IllegalStateException("Không có sản phẩm trong database")))
+				.delayElement(Duration.ofSeconds(1));
 	}
 
 	private Mono<Double> fetchAveragePrice() {
@@ -72,6 +73,7 @@ public class WebfluxController {
 				.map(products -> products.stream()
 						.mapToDouble(Product::getPrice)
 						.average()
-						.orElse(0.0));
+						.orElse(0.0))
+				.delayElement(Duration.ofSeconds(1));
 	}
 }
