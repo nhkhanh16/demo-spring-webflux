@@ -1,8 +1,8 @@
 {
 	"info": {
 		"_postman_id": "4b5c8d63-86d4-4a90-b2d8-6d3be8728063",
-		"name": "WebFlux vs MVC Load Test",
-		"description": "Local performance comparison. Run one folder at a time with the same virtual-user and duration settings.",
+		"name": "Spring MVC & WebFlux Demo",
+		"description": "Demo APIs and local load-test requests. For Performance runs, select only one dedicated load-test folder at a time.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"variable": [
@@ -63,6 +63,93 @@
 									"});"
 								]
 							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "API Demo",
+			"description": "Gửi thử các endpoint của hai ứng dụng. Các request ở đây không dùng làm folder Performance.",
+			"item": [
+				{
+					"name": "Spring MVC",
+					"item": [
+						{
+							"name": "GET /api/demo/aggregate",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{mvcBaseUrl}}/api/demo/aggregate",
+								"description": "Tổng hợp số lượng, sản phẩm đắt nhất và giá trung bình theo thứ tự."
+							},
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"pm.test('HTTP 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										]
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Spring WebFlux",
+					"item": [
+						{
+							"name": "GET /api/demo/aggregate",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{webfluxBaseUrl}}/api/demo/aggregate",
+								"description": "Tổng hợp ba Publisher đồng thời bằng Mono.zip."
+							},
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"pm.test('HTTP 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "GET /api/demo/stream (SSE)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "text/event-stream"
+									}
+								],
+								"url": "{{webfluxBaseUrl}}/api/demo/stream",
+								"description": "Nhận từng sản phẩm qua SSE, cách nhau khoảng một giây; stream kết thúc sau dữ liệu mẫu."
+							},
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"pm.test('HTTP 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										]
+									}
+								}
+							]
 						}
 					]
 				}
